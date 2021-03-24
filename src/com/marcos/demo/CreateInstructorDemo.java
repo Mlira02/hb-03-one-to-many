@@ -1,12 +1,14 @@
 package com.marcos.demo;
 
+import entity.Course;
 import entity.Instructor;
 import entity.InstructorDetail;
+import entity.Student;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-public class DeleteDemo
+public class CreateInstructorDemo
 {
     public static void main(String[] args)
     {
@@ -14,35 +16,32 @@ public class DeleteDemo
                                     .configure("hibernate.cfg.xml")
                                     .addAnnotatedClass(Instructor.class)
                                     .addAnnotatedClass(InstructorDetail.class)
+                                    .addAnnotatedClass(Course.class)
                                     .buildSessionFactory();
 
         Session session = factory.getCurrentSession();
 
         try
         {
+
+            Instructor tempInstructor = new Instructor("Susan", "Strong", "susanS@gmail.com");
+            InstructorDetail tempDetails = new InstructorDetail("youtube.com/susanStrong", "accounting");
+            tempInstructor.setInstructorDetail(tempDetails);
+
             session.beginTransaction();
-            int theId = 2;
-            Instructor tempInstructor = session.get(Instructor.class, theId);
 
-            System.out.println("Found instructor " + tempInstructor);
-
-            if(tempInstructor != null)
-            {
-                System.out.println("Deleting " + tempInstructor);
-//                Deletion of this instructor will also delete instructor detail for this instructor as well
-//                CASACADE.ALL is selected for the instructor currently
-                session.delete(tempInstructor);
-            }
-            else
-            {
-                System.out.println("instructor was not found...");
-            }
+            session.save(tempInstructor);
 
             session.getTransaction().commit();
+        }
+        catch(Exception exc)
+        {
+            exc.printStackTrace();
         }
         finally
         {
             System.out.println("All tasks completed...");
+            session.close();
             factory.close();
         }
     }

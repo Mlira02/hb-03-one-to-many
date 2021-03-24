@@ -1,13 +1,13 @@
 package com.marcos.demo;
 
+import entity.Course;
 import entity.Instructor;
 import entity.InstructorDetail;
-import entity.Student;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-public class CreateDemo
+public class CreateCoursesDemo
 {
     public static void main(String[] args)
     {
@@ -15,6 +15,7 @@ public class CreateDemo
                                     .configure("hibernate.cfg.xml")
                                     .addAnnotatedClass(Instructor.class)
                                     .addAnnotatedClass(InstructorDetail.class)
+                                    .addAnnotatedClass(Course.class)
                                     .buildSessionFactory();
 
         Session session = factory.getCurrentSession();
@@ -23,25 +24,23 @@ public class CreateDemo
         {
             session.beginTransaction();
 
-            int theId = 3;
+            int theID = 3;
+            Instructor tempInstructor = session.get(Instructor.class, theID);
 
-            InstructorDetail tempInstructorDetail = session.get(InstructorDetail.class, theId);
-            System.out.println("Associated Instructor: " + tempInstructorDetail.getInstructor());
+            Course tempCourse1 = new Course("Business 202");
+            Course tempCourse2 = new Course("English 223");
 
-            //  This line breaks the relationship between instructor and instructorDetail
-            tempInstructorDetail.getInstructor().setInstructorDetail(null);
+            tempInstructor.add(tempCourse1);
+            tempInstructor.add(tempCourse2);
 
-            session.delete(tempInstructorDetail);
+            session.save(tempCourse1);
+            session.save(tempCourse2);
+
             session.getTransaction().commit();
-        }
-        catch(Exception exc)
-        {
-            exc.printStackTrace();
         }
         finally
         {
             System.out.println("All tasks completed...");
-            session.close();
             factory.close();
         }
     }

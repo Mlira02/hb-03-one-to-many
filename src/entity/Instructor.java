@@ -1,12 +1,14 @@
 package entity;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "instructor")
 public class Instructor
 {
-
+//    Fields
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -25,6 +27,10 @@ public class Instructor
     @JoinColumn(name = "instructor_detail_id")
     private InstructorDetail instructorDetail;
 
+    @OneToMany(mappedBy = "instructor", cascade = {CascadeType.PERSIST, CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
+    private List<Course> courses;
+
+//    Constructors
     public Instructor()
     {
     }
@@ -36,6 +42,8 @@ public class Instructor
         this.email = email;
     }
 
+
+//    Methods
     public int getId()
     {
         return id;
@@ -66,6 +74,16 @@ public class Instructor
         return instructorDetail;
     }
 
+    public List<Course> getCourses()
+    {
+        return courses;
+    }
+
+    public void setCourses(List<Course> courses)
+    {
+        this.courses = courses;
+    }
+
     public void setFirstName(String firstName)
     {
         this.firstName = firstName;
@@ -86,6 +104,18 @@ public class Instructor
         this.instructorDetail = instructorDetail;
     }
 
+    public void add(Course tempCourse)
+    {
+        if(courses == null)
+        {
+            courses = new ArrayList<>();
+        }
+
+        courses.add(tempCourse);
+        tempCourse.setInstructor(this);
+    }
+
+//    Overrides
     @Override
     public String toString()
     {
