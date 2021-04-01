@@ -24,7 +24,7 @@ public class GetInstructorCoursesDemo
         {
             session.beginTransaction();
 
-            int theID = 3;
+            int theID = 1;
             Instructor tempInstructor = session.get(Instructor.class, theID);
             System.out.println("Current instructor is " + tempInstructor);
             System.out.println("All courses here: " + tempInstructor.getCourses());
